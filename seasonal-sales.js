@@ -1,17 +1,20 @@
-console.log("in js file");
-
+// Import Products and Categories data from json files
+// Send to functions to write data to the DOM
 var productsRequest = new XMLHttpRequest();
-productsRequest.addEventListener('load', productFxn);
+productsRequest.addEventListener('load', makeProductsArray);
 productsRequest.addEventListener('error', errorFxn);
 productsRequest.open('GET','products.json');
 productsRequest.send();  // run the request
 
+
 var categoriesRequest = new XMLHttpRequest();
-categoriesRequest.addEventListener('load', categoriesFxn);
+categoriesRequest.addEventListener('load', makeCategoriesArray);
 categoriesRequest.addEventListener('error', errorFxn);
 categoriesRequest.open('GET','categories.json');
 categoriesRequest.send();  // run the request
 
+var productsArray = [];
+var categoriesArray = [];
 
 
 ////////////////////
@@ -19,20 +22,18 @@ categoriesRequest.send();  // run the request
 ////////////////////
 
 
-function productFxn() {
-	console.log("this", this.responseText);
+function makeProductsArray() {
 	var data = JSON.parse(this.responseText);
-	domString(data.products);
+	createProductsDomString(data.products);
+	productsArray = data.products;
+	console.log(1);
 }
 
-function categoriesFxn() {
-	console.log("this", this.responseText);
+function makeCategoriesArray() {
 	var data = JSON.parse(this.responseText);
 	processCategories(data.categories);
-}
-
-function errorFxn() {
-	console.log("Broken code!")
+	categoriesArray = data.categories;
+	console.log(2);
 }
 
 function writeToDom(node, divId) {
@@ -40,23 +41,7 @@ function writeToDom(node, divId) {
 
 }
 
-function processCategories(arrayOfCategories) {
-	var departmentsArray 	= [];
-	var seasonsArray 		= [];
-	var discountsArray 		= [];
-
-	for (var i = 0; i < arrayOfCategories.length; i++) {
-		departmentsArray[i] = arrayOfCategories[i].name;
-		seasonsArray[i]		= arrayOfCategories[i].season_discount;
-		discountsArray[i]	= arrayOfCategories[i].discount;
-	}
-
-	assignDepartments(departmentsArray);
-	assignSeasons(seasonsArray);
-	assignDiscounts(discountsArray);
-}
-
-function domString(arrayOfStuff) {
+function createProductsDomString(arrayOfStuff) {
 	for (var i = 0; i < arrayOfStuff.length; i++) {
 		var sectionNode = '';
 		var nameNode = '';
@@ -75,7 +60,6 @@ function domString(arrayOfStuff) {
 
 		catIdNode = document.createElement('p');
 		catIdNode.setAttribute('class', 'catId');
-//		imgNode.setAttribute('src', `${arrayOfStuff[i].url}`)
 		catIdNode.innerHTML = arrayOfStuff[i].category_id;
 
 		sectionNode.appendChild(nameNode);
@@ -86,35 +70,88 @@ function domString(arrayOfStuff) {
 	}
 }
 
+function processCategories(arrayOfCategories) {
+	var departmentsArray 	= [];
+	var seasonsArray 		= [];
+	var discountsArray 		= [];
+
+	for (var i = 0; i < arrayOfCategories.length; i++) {
+		departmentsArray[i] = arrayOfCategories[i].name;
+		seasonsArray[i]		= arrayOfCategories[i].season_discount;
+		discountsArray[i]	= arrayOfCategories[i].discount;
+	}
+
+	assignDepartments(departmentsArray);
+	createSeasonsDropDown(seasonsArray, discountsArray);
+	addListenersToDropDown(discountsArray);
+}
+
 function assignDepartments(departmentsArray){
 	var catIdArray = document.getElementsByClassName('catId');
 
 	for (var i = 0; i < catIdArray.length; i++) {
 		var deptIndex = parseInt(catIdArray[i].innerHTML) - 1;
 		catIdArray[i].innerHTML = String(departmentsArray[deptIndex]);
-	}
-	addDeptToDom(catIdArray);
-}
-
-function addDeptToDom(thingsToWriteToDom) {
-	var parentSections = document.getElementsByClassName('item');
-	for (var i = 0; i < parentSections.legnth; i++) {
-		parentSection.removeChild(parentSection.childNodes[2]);
-		parentSection.appendChild(thingsToWriteToDom[i]);
+		catIdArray[i].classList.add(String(departmentsArray[deptIndex]));
 	}
 }
 
+function createSeasonsDropDown(seasons) {
+	var selectElement  = document.createElement('select');
+	selectElement.setAttribute('id', 'season');
+	for (var i = -1; i < seasons.length; i++) {
+		if (i < 0) {
+			optionNode = document.createElement('option');
+			optionNode.setAttribute('value', 'blank');
+			optionNode.innerHTML = '';
+			selectElement.appendChild(optionNode);
+		}
+		else {
+			optionNode = document.createElement('option');
+			optionNode.setAttribute('value', `${seasons[i]}`);
+			optionNode.innerHTML = `${seasons[i]}`;
+			selectElement.appendChild(optionNode);
+		}
+	}
+	writeToDom(selectElement, 'season-selection');
+} 
 
-function assignSeasons(seasonsArray){
+function addListenersToDropDown(discounts) {
+	var dropDownSelect = document.getElementById("season");
+	dropDownSelect.addEventListener('change', function(e) { applySeasonalDiscount(e.target.value)});
+}
 
+function applySeasonalDiscount(season) {
+	switch(season) {
+    case 'Winter':
+    	resetToOriginalPrices();
+        var productItems = document.getElementsByClassName('Apparel');
+        break;
+    case 'Autumn':
+      	resetToOriginalPrices();
+    	var productItems = document.getElementsByClassName('Furniture');
+        alert(season);
+        break;
+    case 'Spring':
+        resetToOriginalPrices();
+    	var productItems = document.getElementsByClassName('Household');
+        alert(season);
+        break;
+    default:
+        resetToOriginalPrices();
+        alert(season);
+}
+
+function resetToOriginalPrices() {
+
+	
+}
 
 }
 
-function assignDiscounts(discountsArray){
-
-
+function errorFxn() {
+	console.log("Broken code!")
 }
-
 
  //      "id": 1,
  //      "name": "Mens socks",
