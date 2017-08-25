@@ -24,15 +24,15 @@ var categoriesArray = [];
 
 function makeProductsArray() {
 	var data = JSON.parse(this.responseText);
-	createProductsDomString(data.products);
 	productsArray = data.products;
+	createProductsDomString(productsArray);
 	console.log(1);
 }
 
 function makeCategoriesArray() {
 	var data = JSON.parse(this.responseText);
-	processCategories(data.categories);
 	categoriesArray = data.categories;
+	processCategories(catagoriesArray);
 	console.log(2);
 }
 
@@ -91,8 +91,8 @@ function assignDepartments(departmentsArray){
 
 	for (var i = 0; i < catIdArray.length; i++) {
 		var deptIndex = parseInt(catIdArray[i].innerHTML) - 1;
-		catIdArray[i].innerHTML = String(departmentsArray[deptIndex]);
-		catIdArray[i].classList.add(String(departmentsArray[deptIndex]));
+		catIdArray[i].innerHTML = departmentsArray[deptIndex];
+		catIdArray[i].classList.add(departmentsArray[deptIndex]);
 	}
 }
 
@@ -125,41 +125,41 @@ function applySeasonalDiscount(season) {
 	switch(season) {
     case 'Winter':
     	resetToOriginalPrices();
-        var productItems = document.getElementsByClassName('Apparel');
+        var discountedItems = document.getElementsByClassName('Apparel');
+        calculateDiscount(0.1, discountedItems);
         break;
     case 'Autumn':
       	resetToOriginalPrices();
-    	var productItems = document.getElementsByClassName('Furniture');
-        alert(season);
+    	var discountedItems = document.getElementsByClassName('Furniture');
+        calculateDiscount(0.25, discountedItems);
         break;
     case 'Spring':
         resetToOriginalPrices();
-    	var productItems = document.getElementsByClassName('Household');
-        alert(season);
+    	var discountedItems = document.getElementsByClassName('Household');
+        calculateDiscount(0.15, discountedItems);
         break;
     default:
-        resetToOriginalPrices();
-        alert(season);
+        resetToOriginalPrices(0, discountedItems);    
+	}
 }
 
-function resetToOriginalPrices() {
-
-	
+function calculateDiscount (discountPercentage, productsToDiscount) { console.log("incalculateDiscount");
+	for (var i = 0; i < productsToDiscount.length; i++ ) {
+		var price = parseInt(productsToDiscount[i].previousSibling.innerText);
+		price *= (1 - discountPercentage);
+		productsToDiscount[i].previousSibling.innerText = price.toFixed(2);
+		productsToDiscount[i].previousSibling.classList.add('sale');
+	}
 }
 
+function resetToOriginalPrices() { console.log("in resetToOriginalPrices");
+	var allItems = document.getElementsByClassName('item');
+	for (var i = 0; i < allItems.length; i++) {
+		allItems[i].lastChild.previousSibling.innerText = productsArray[i].price; console.log(productsArray[i].price);
+		allItems[i].lastChild.previousSibling.classList.remove('sale');
+	}
 }
 
 function errorFxn() {
 	console.log("Broken code!")
 }
-
- //      "id": 1,
- //      "name": "Mens socks",
- //      "price": 6.99,
- //      "category_id": 1
-
-
-	// "id": 1,
-	// "name": "Apparel",
-	// "season_discount": "Winter",
-	// "discount": 0.10
