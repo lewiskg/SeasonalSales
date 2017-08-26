@@ -32,7 +32,7 @@ function makeProductsArray() {
 function makeCategoriesArray() {
 	var data = JSON.parse(this.responseText);
 	categoriesArray = data.categories;
-	processCategories(catagoriesArray);
+	processCategories(categoriesArray);
 	console.log(2);
 }
 
@@ -143,7 +143,7 @@ function applySeasonalDiscount(season) {
 	}
 }
 
-function calculateDiscount (discountPercentage, productsToDiscount) { console.log("incalculateDiscount");
+function calculateDiscount (discountPercentage, productsToDiscount) {
 	for (var i = 0; i < productsToDiscount.length; i++ ) {
 		var price = parseInt(productsToDiscount[i].previousSibling.innerText);
 		price *= (1 - discountPercentage);
@@ -155,7 +155,7 @@ function calculateDiscount (discountPercentage, productsToDiscount) { console.lo
 function resetToOriginalPrices() { console.log("in resetToOriginalPrices");
 	var allItems = document.getElementsByClassName('item');
 	for (var i = 0; i < allItems.length; i++) {
-		allItems[i].lastChild.previousSibling.innerText = productsArray[i].price; console.log(productsArray[i].price);
+		allItems[i].lastChild.previousSibling.innerText = productsArray[i].price;
 		allItems[i].lastChild.previousSibling.classList.remove('sale');
 	}
 }
