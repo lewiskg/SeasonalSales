@@ -76,7 +76,7 @@ function processCategories(arrayOfCategories) {
 	var discountsArray 		= [];
 
 	for (var i = 0; i < arrayOfCategories.length; i++) {
-		departmentsArray[i] = arrayOfCategories[i].name;
+		departmentsArray[i]	= arrayOfCategories[i].name;
 		seasonsArray[i]		= arrayOfCategories[i].season_discount;
 		discountsArray[i]	= arrayOfCategories[i].discount;
 	}
@@ -152,7 +152,7 @@ function calculateDiscount (discountPercentage, productsToDiscount) {
 	}
 }
 
-function resetToOriginalPrices() { console.log("in resetToOriginalPrices");
+function resetToOriginalPrices() {
 	var allItems = document.getElementsByClassName('item');
 	for (var i = 0; i < allItems.length; i++) {
 		allItems[i].lastChild.previousSibling.innerText = productsArray[i].price;
