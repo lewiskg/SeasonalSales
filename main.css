@@ -1,5 +1,12 @@
 body {
+	margin:10px;
 	background-color: lightpink;
+}
+
+#season {
+	display: block;
+	margin: 0 auto;
+	font-size: 15px;
 }
 
 #container {
@@ -9,6 +16,10 @@ body {
 	justify-content: center;
 }
 
+h2 {
+	text-align: center;
+}
+
 .item {
 	width: 200px;
     margin: auto;
@@ -16,5 +27,14 @@ body {
     margin: 10px;
     padding: 5px;
     display: inline-block;
-	text-align: center
+	text-align: center;
+	background-color: lightgray;
+}
+
+.itemPrice {
+	font-size: 20px;
+}
+
+.sale {
+	color: red;
 }
